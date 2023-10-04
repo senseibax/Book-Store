@@ -1,8 +1,9 @@
 package kz.sensei.crudlab1.Controller;
 
 import kz.sensei.crudlab1.Model.Book;
-import kz.sensei.crudlab1.Repository.BookRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import kz.sensei.crudlab1.service.BookServiice;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
@@ -13,47 +14,41 @@ import java.util.Optional;
 @RequestMapping("/books")
 @CrossOrigin(origins = "http://localhost:3000")
 public class BookController {
-    private final BookRepository bookRepository;
+    private final BookServiice bookServiice;
 
-    @Autowired
-    public BookController(BookRepository bookRepository) {
-        this.bookRepository = bookRepository;
+    public BookController(BookServiice bookServiice) {
+        this.bookServiice = bookServiice;
     }
 
     @GetMapping("/")
     public List<Book> getAllBooks() {
-        return bookRepository.findAll();
+        return bookServiice.takeAllBook();
     }
 
     @PostMapping("/")
-    public Book createBook(@RequestBody Book book) {
-        return bookRepository.save(book);
+    public ResponseEntity<Book> createBook(@RequestBody Book book) {
+        bookServiice.createBook(book);
+        return new ResponseEntity<>(book, HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
     public Optional<Book> getBookById(@PathVariable Long id) {
-        return bookRepository.findById(id);
+        return bookServiice.findByID(id);
     }
 
     @PutMapping("/{id}")
-    public Book updateBook(@PathVariable Long id, @RequestBody Book updatedBook) {
-        updatedBook.setId(id);
-        return bookRepository.save(updatedBook);
+    public void updateBook(@PathVariable Long id, @RequestBody Book updatedBook) {
+        bookServiice.updateBook(id, updatedBook);
     }
 
     @DeleteMapping("/{id}")
     public void deleteBook(@PathVariable Long id) {
-        bookRepository.deleteById(id);
+        bookServiice.deleteBook(id);
     }
 
-
-    @GetMapping("/filter")
-    public List<Book> getBooksByPriceRange(@RequestParam double minPrice, @RequestParam double maxPrice) {
-        return bookRepository.findByPriceBetween(minPrice, maxPrice);
-    }
 
     @GetMapping("/search")
     public List<Book> searchBooks(@RequestParam String keyword) {
-        return bookRepository.findByTitleContainingOrAuthorContaining(keyword, keyword);
+        return bookServiice.findByAuthorOrTitle(keyword, keyword);
     }
 }
