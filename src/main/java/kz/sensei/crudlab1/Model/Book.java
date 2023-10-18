@@ -18,4 +18,10 @@ public class Book {
     private String author;
     private double price;
 
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+    @JoinColumn
+    private User user;
+
+    @ManyToOne
+    private Store store;
 }
