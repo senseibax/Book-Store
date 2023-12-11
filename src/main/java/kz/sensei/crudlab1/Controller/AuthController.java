@@ -29,9 +29,9 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@RequestBody Map<String, String> credentials) {
-        String username = credentials.get("username");
+        String email = credentials.get("email");
         String password = credentials.get("password");
-        User authenticatedUser = userService.authenticateUser(username, password);
+        User authenticatedUser = userService.authenticateUser(email, password);
         if (authenticatedUser != null) {
             return new ResponseEntity<>(authenticatedUser, HttpStatus.OK);
         } else {

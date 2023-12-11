@@ -52,8 +52,8 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public User authenticateUser(String name, String password) {
-        User user = userRepository.findByName(name);
+    public User authenticateUser(String email, String password) {
+        User user = userRepository.findByEmail(email);
 
         if (user == null) {
             return null;
